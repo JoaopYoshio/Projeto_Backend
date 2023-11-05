@@ -1,6 +1,7 @@
 import { Error } from "mongoose";
 import grupoSchema from "../models/grupoSchema";
 import { GrupoTypes } from "src/types/grupoTypes";
+import { UsuarioService } from "./usuarioService";
 
 export class GrupoService {
 	public async cadastrarGrupo(grupo: GrupoTypes, admin: string) {
@@ -15,7 +16,9 @@ export class GrupoService {
 			}]
 		};
 
-		return await grupoSchema.create(dadosGrupo);
+		const novoGrupo = await grupoSchema.create(dadosGrupo);
+		new UsuarioService().atualizarGrupoUsuario(admin, novoGrupo._id)
+		return novoGrupo;
 	}
 
 	public async consultarGrupo(idGrupo: string) {

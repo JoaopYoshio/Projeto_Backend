@@ -16,10 +16,10 @@ const usuarioSchema = new mongoose.Schema({
 		type: String,
 		require: true
 	},
-	grupos: {
+	grupos: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Grupo'
-	}
+	}]
 }, { versionKey: false });
 
 export default mongoose.model("Usuario", usuarioSchema);

@@ -1,5 +1,7 @@
 import usuarioModel from "../models/usuarioSchema";
 import { UsuarioTypes } from "src/types/usuarioTypes";
+import mongoose from "mongoose";
+type ObjectId = mongoose.Types.ObjectId;
 
 
 export class UsuarioService {
@@ -17,7 +19,8 @@ export class UsuarioService {
 		const dadosUsuario = {
 			email: usuario.email,
 			senha: usuario.senha,
-			nome: usuario.nome
+			nome: usuario.nome,
+			grupo: []
 		};
 
 		await usuarioModel.create(dadosUsuario);
@@ -26,6 +29,9 @@ export class UsuarioService {
 	public async consultarUsuario(id: string) {
 		const usuario = await usuarioModel.findById(id);
 		if (!usuario) throw new Error("Usuário não encontrado");
+		if(usuario?.grupos){
+			usuario.populate("grupos");
+		}
 
 		return usuario;
 	}
@@ -34,6 +40,16 @@ export class UsuarioService {
 		const usuario = await usuarioModel.findById(idUsuario);
 		if (!usuario) throw new Error("Usuário não encontrado");
 		await usuarioModel.findByIdAndUpdate(idUsuario, dadosAtualizado);
+
+		return this.consultarUsuario(idUsuario);
+	}
+
+	public async atualizarGrupoUsuario(idUsuario: string, idGrupo: ObjectId) {
+		const usuario = await usuarioModel.findById(idUsuario);
+		if (!usuario) throw new Error("Usuário não encontrado");
+
+		usuario.grupos = [...usuario.grupos, idGrupo]
+		await usuarioModel.findByIdAndUpdate(idUsuario, usuario);
 
 		return this.consultarUsuario(idUsuario);
 	}
