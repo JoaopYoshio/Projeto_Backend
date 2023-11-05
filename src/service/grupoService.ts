@@ -2,6 +2,9 @@ import { Error } from "mongoose";
 import grupoSchema from "../models/grupoSchema";
 import { GrupoTypes } from "src/types/grupoTypes";
 import { UsuarioService } from "./usuarioService";
+import mongoose from "mongoose";
+import usuarioSchema from "src/models/usuarioSchema";
+const ObjectId = mongoose.Types.ObjectId;
 
 export class GrupoService {
 	public async cadastrarGrupo(grupo: GrupoTypes, admin: string) {
@@ -17,7 +20,7 @@ export class GrupoService {
 		};
 
 		const novoGrupo = await grupoSchema.create(dadosGrupo);
-		new UsuarioService().atualizarGrupoUsuario(admin, novoGrupo._id)
+		new UsuarioService().atualizarGruposUsuario(admin, novoGrupo._id)
 		return novoGrupo;
 	}
 
@@ -29,15 +32,29 @@ export class GrupoService {
 	}
 
 	public async atualizarGrupo(idGrupo: string, dadosAtualizado: object) {
-		const grupo = this.consultarGrupo(idGrupo);
+		const grupo = await this.consultarGrupo(idGrupo);
 		if(!grupo) throw new Error("Evento não encontrada");
 		await grupoSchema.findByIdAndUpdate(idGrupo, dadosAtualizado);
 
 		return this.consultarGrupo(idGrupo);
 	}
+
+	public async adicionarUsuario(idGrupo: string, idNovoUsuario: string) {
+		const grupo = await this.consultarGrupo(idGrupo);
+		if(!grupo) throw new Error("Evento não encontrada");
+		const novoUsuario = {
+			usuario: new ObjectId(idNovoUsuario),
+			admin: false,
+		}
+		grupo.usuarios = [...grupo.usuarios, novoUsuario];
+		await new UsuarioService().atualizarGruposUsuario(idNovoUsuario, new ObjectId(idGrupo));
+		await grupoSchema.findByIdAndUpdate(idGrupo, grupo);
+
+		return this.consultarGrupo(idGrupo);
+	}
 	
 	public async deletarGrupo(idGrupo: string) {
-		const grupo = this.consultarGrupo(idGrupo);
+		const grupo = await this.consultarGrupo(idGrupo);
 		if(!grupo) throw new Error("Evento não encontrada");
 
 		return await grupoSchema.findByIdAndDelete(idGrupo);

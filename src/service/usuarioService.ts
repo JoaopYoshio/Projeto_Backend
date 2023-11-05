@@ -44,7 +44,7 @@ export class UsuarioService {
 		return this.consultarUsuario(idUsuario);
 	}
 
-	public async atualizarGrupoUsuario(idUsuario: string, idGrupo: ObjectId) {
+	public async atualizarGruposUsuario(idUsuario: string, idGrupo: ObjectId) {
 		const usuario = await usuarioModel.findById(idUsuario);
 		if (!usuario) throw new Error("Usuário não encontrado");
 

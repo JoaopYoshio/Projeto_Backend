@@ -32,6 +32,17 @@ export class GrupoController {
 		}
 	}
 
+	public async adicionarUsuario(req: Request, res: Response) {
+		try {
+			const grupoAtualizado = await new GrupoService().adicionarUsuario(req.params.id, req.params.idUsuario);
+
+			return res.send(grupoAtualizado).status(200);
+		} catch (error) {
+			res.status(404).send(error.message);
+		}
+	}
+
+
 	public async deletarGrupo(req: Request, res: Response) {
 		try {
 			await new GrupoService().deletarGrupo(req.params.id);

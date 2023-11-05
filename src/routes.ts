@@ -15,13 +15,14 @@ routes.delete("/deletarUsuario/:id", new UsuarioController().deletarUsuario);
 routes.post("/cadastrarGrupo/:admin", new GrupoController().cadastrarGrupo);
 routes.get("/consultarGrupo/:id", new GrupoController().consultarGrupo);
 routes.patch("/atualizarGrupo/:id", new GrupoController().atualizarGrupo);
+routes.patch("/atualizarGrupo/:id/usuario/:idUsuario", new GrupoController().adicionarUsuario);
 routes.delete("/deletarGrupo/:id", new GrupoController().deletarGrupo);
 
 //Evento
 routes.post("/cadastrarEvento", new EventoController().cadastrarEvento);
 routes.get("/consultarEvento/:id", new EventoController().consultarEvento);
 routes.patch("/atualizarEvento/:id", new EventoController().atualizarEvento);
-routes.patch("/atualizarEvento/:id/Usuario/:idUsuario", new EventoController().atualizarEventoUsuario);
+routes.patch("/atualizarEvento/:id/usuario/:idUsuario", new EventoController().atualizarEventoUsuario);
 routes.delete("/deletarEvento/:id", new EventoController().deletarEvento);
 
 export default routes;
