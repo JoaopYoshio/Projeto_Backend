@@ -1,7 +1,7 @@
+import "dotenv/config";
 import express from "express";
 import routes from "./routes";
-// import mongoose from "mongoose";
-
+import mongoose from "mongoose";
 
 export class App {
 	public express: express.Application;
@@ -10,7 +10,7 @@ export class App {
 		this.express = express();
 
 		this.middleware();
-		//this.database();
+		this.database();
 		this.routes();
 	}
 
@@ -22,13 +22,14 @@ export class App {
 		this.express.use(routes);
 	}
 
-	// private async database() {
-	// 	try {
-	// 		mongoose.set("strictQuery", true);
-	// 		await mongoose.connect("mongodb://0.0.0.0:27017/ProjetoOrgEvento");
-	// 		console.log("Connect database success");
-	// 	} catch (err) {
-	// 		console.error("Connect database fail, error: ", err);
-	// 	}
-	// }
+	private async database() {
+		try {
+			const stringConnection = process.env.DB_CONNECTION_STRING;
+			mongoose.set("strictQuery", true);
+			if(stringConnection) await mongoose.connect(stringConnection);
+			console.log("Connect database success");
+		} catch (err) {
+			console.error("Connect database fail, error: ", err);
+		}
+	}
 }
